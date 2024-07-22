@@ -6,15 +6,13 @@ class Solution {
         ArrayDeque<Character> stack = new ArrayDeque<>();
 
         for(int i=0; i<s.length(); i++){
-            char brackets = s.charAt(i);
-
-            if(brackets == '(' || brackets == '{' || brackets == '[')
-                stack.push(brackets);
+            if(s.charAt(i) == '(' || s.charAt(i) == '{' || s.charAt(i) == '[')
+                stack.push(s.charAt(i));
             else{
                 if(stack.isEmpty())   return false;
 
                 char opening = stack.pop();
-                if((opening == '(' && brackets == ')') || (opening == '{' && brackets == '}') || (opening == '[' && brackets == ']'))   
+                if((opening == '(' && s.charAt(i) == ')') || (opening == '{' && s.charAt(i) == '}') || (opening == '[' && s.charAt(i) == ']'))   
                     continue;
                 else 
                     return false;
