@@ -1,25 +1,17 @@
 import java.util.*;
 class Solution {
     public List<List<Integer>> subsets(int[] nums) {
-        List<List<Integer>> ans = new ArrayList<>();
-        List<Integer> cur = new ArrayList<>();
-
-        Arrays.sort(nums);
-        subSequenceArray(nums, ans, cur, 0);
-        return ans;
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(nums, 0, new ArrayList<>(), result);
+        return result;
     }
-
-    static void subSequenceArray(int[] nums, List<List<Integer>> ans, List<Integer> cur, int index)
-    {
-        ans.add(new ArrayList<>(cur));
-
-        for(int i=index; i<nums.length; i++)
-        {
-            if(i>index && nums[i] == nums[i-1]) continue;
-
-            cur.add(nums[i]);
-            subSequenceArray(nums,ans,cur,i+1);
-            cur.remove(cur.size()-1);
+    
+    private void backtrack(int[] nums, int start, List<Integer> path, List<List<Integer>> result) {
+        result.add(new ArrayList<>(path));
+        for (int i = start; i < nums.length; i++) {
+            path.add(nums[i]);
+            backtrack(nums, i + 1, path, result);
+            path.remove(path.size() - 1);
         }
     }
 }
