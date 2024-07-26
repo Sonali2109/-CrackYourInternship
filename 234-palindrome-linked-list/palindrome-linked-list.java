@@ -9,46 +9,34 @@
  * }
  */
 class Solution {
-    public boolean isPalindrome(ListNode head) 
-    {
+    public boolean isPalindrome(ListNode head) {
+        if(head==null || head.next==null)
+            return true;
+        
         ListNode slow = head;
         ListNode fast = head;
-
-        // finds the middle element of LL
-        while(fast != null && fast.next != null)    
-        {
+        while(fast!=null && fast.next!=null){
             slow = slow.next;
             fast = fast.next.next;
         }
-
-        ListNode t2 = reverseLLhelper(slow);    //reverse the LL starts from middle (to the end)
-        ListNode t1 = head;
-
-        //checks whether given LL is Palindrome or not!
-        while(t2 != null)
-        {
-            if(t1.val != t2.val)    return false;   
-            t1 = t1.next;
-            t2 = t2.next;
+        ListNode prev = null;
+        ListNode curr = slow;
+        ListNode next = slow;
+        while(curr!=null){
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
         }
 
+        ListNode h1 = head;
+        ListNode h2 = prev;
+        while(h1!=null && h2!=null){
+            if(h1.val!=h2.val)
+                return false;
+            h1 = h1.next;
+            h2 = h2.next;
+        }
         return true;
-    }
-
-    static ListNode reverseLLhelper(ListNode head)
-    {
-        ListNode prev = head;
-        ListNode cur = head.next;
-        head.next = null;
-
-        while(cur != null)
-        {
-            ListNode next = cur.next;
-            cur.next = prev;
-            prev = cur;
-            cur = next;
-        }
-
-        return prev;
     }
 }
