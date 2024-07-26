@@ -11,52 +11,28 @@
 class Solution {
     public ListNode sortList(ListNode head) {
         if (head == null || head.next == null) {
-            return head;
-        }
-
-        ListNode mid = getMiddle(head);
-        ListNode left = head;
-        ListNode right = mid.next;
-        mid.next = null;
-
-        left = sortList(left);
-        right = sortList(right);
-
-        return merge(left, right);
+      return head;
     }
 
-    private ListNode getMiddle(ListNode head) {
-        if (head == null) return head;
+    int[] freq = new int[100001];
 
-        ListNode slow = head, fast = head.next;
-        while (fast != null && fast.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-        return slow;
+    ListNode handle = head;
+
+    while (handle != null) {
+      freq[handle.val + 50000]++;
+      handle = handle.next;
     }
 
-    private ListNode merge(ListNode l1, ListNode l2) {
-        ListNode dummy = new ListNode(0);
-        ListNode current = dummy;
+    handle = head;
 
-        while (l1 != null && l2 != null) {
-            if (l1.val <= l2.val) {
-                current.next = l1;
-                l1 = l1.next;
-            } else {
-                current.next = l2;
-                l2 = l2.next;
-            }
-            current = current.next;
-        }
+    for (int i = 0; i < freq.length; i++) {
+      while (freq[i] != 0) {
+        handle.val = i - 50000;
+        handle = handle.next;
+        freq[i]--;
+      }
+    }
 
-        if (l1 != null) {
-            current.next = l1;
-        } else if (l2 != null) {
-            current.next = l2;
-        }
-
-        return dummy.next;
+    return head;
     }
 }
