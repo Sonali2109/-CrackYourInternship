@@ -4,7 +4,7 @@ class Solution {
 
         int n = nums.length;
         Arrays.sort(nums);
-        int median = n/2 == 0 ? (nums[n/2]+nums[n/2-1])/2 : nums[n/2];  
+        int median = nums[n/2];  
         int steps = 0;
 
         for(int num: nums)
