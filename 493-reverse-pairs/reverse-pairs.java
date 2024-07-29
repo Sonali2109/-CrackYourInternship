@@ -1,54 +1,59 @@
-public class Solution {
-
+class Solution {
     public int reversePairs(int[] nums) {
-        return mergeSort(nums, 0, nums.length - 1);
+        return mergeSort(nums, 0 , nums.length-1);              
     }
 
-    private int mergeSort(int[] arr, int low, int high) {
-        int cnt = 0;
-        if (low >= high) return cnt;
+    static int mergeSort(int[] nums, int low, int high)
+    {
+        if(low>=high)   return 0;
+        
         int mid = (low + high) / 2;
-        cnt += mergeSort(arr, low, mid);
-        cnt += mergeSort(arr, mid + 1, high);
-        cnt += countPairs(arr, low, mid, high);
-        merge(arr, low, mid, high);
-        return cnt;
+        int interval = 0;
+        interval += mergeSort(nums,low,mid);
+        interval += mergeSort(nums,mid+1,high);
+        interval += merge(nums,low,mid,high);
+
+        return  interval;
     }
 
-    private void merge(int[] arr, int low, int mid, int high) {
-        int[] temp = new int[high - low + 1];
-        int left = low;
-        int right = mid + 1;
-        int index = 0;
+    //main code for this problem statement
+    static int merge(int[] nums, int low, int mid, int high)
+    {
+        int count = 0;
+        int j = mid+1;  //right half of the array
 
-        while (left <= mid && right <= high) {
-            if (arr[left] <= arr[right]) {
-                temp[index++] = arr[left++];
-            } else {
-                temp[index++] = arr[right++];
+        for(int i=low; i<=mid; i++)
+        {
+            while(j<=high && nums[i] > (2 * (long)nums[j])){
+                j++;
             }
+            count += j - (mid+1); // count the items present in the left half
         }
 
-        while (left <= mid) {
-            temp[index++] = arr[left++];
+        ArrayList<Integer> arr = new ArrayList<>();
+        int left = low , right = mid+1;
+
+        while(left <= mid && right <= high)
+        {
+            if(nums[left] <= nums[right])   
+                arr.add(nums[left++]);
+            else
+                arr.add(nums[right++]);
         }
 
-        while (right <= high) {
-            temp[index++] = arr[right++];
+        while(left<=mid){
+            arr.add(nums[left++]);
         }
 
-        System.arraycopy(temp, 0, arr, low, temp.length);
-    }
-
-    private int countPairs(int[] arr, int low, int mid, int high) {
-        int right = mid + 1;
-        int cnt = 0;
-        for (int i = low; i <= mid; i++) {
-            while (right <= high && (long) arr[i] > 2L * arr[right]) {
-                right++;
-            }
-            cnt += (right - (mid + 1));
+        while(right<=high){
+            arr.add(nums[right++]);
         }
-        return cnt;
+
+        for(int i=low; i<=high; i++)
+        {
+            nums[i] = arr.get(i-low);
+        }
+
+        return count;
     }
 }
