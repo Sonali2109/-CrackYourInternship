@@ -1,46 +1,42 @@
 class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
-        List<List<Integer>> result =new ArrayList();
+        List<List<Integer>> ans = new ArrayList<>();
+        Set<List<Integer>> hset = new HashSet<>();
+
         Arrays.sort(nums);
-        for(int i=0;i<nums.length-3;i++){
-            if(i>0 && nums[i]==nums[i-1]){
-                continue;
-            }
 
-            for(int j=i+1;j<nums.length-2;j++){
-             if(j>i+1&& nums[j]==nums[j-1]){
-                continue;
-             }
+        int n = nums.length;
 
-             int left = j+1;
-             int right= nums.length-1;
-
-             while(left<right){
-                long sum =(long) nums[i]+ (long)nums[j]+(long) nums[left]+(long)nums[right];
-                
-                if(sum==target){
-                  
-                    result.add(Arrays.asList( nums[i],nums[j], nums[left],nums[right]));
-                    while(left<right && nums[left]==nums[left+1]){
-                        left++;
+        int i = 0, j = 0, k = 0, m = 0;
+        for(;i<n-3; i++) {
+            if (i > 0 && nums[i] == nums[i-1]) continue;
+            if (sum4(nums[i], nums[i + 1], nums[i + 2], nums[i + 3]) > target) break;
+            if (sum4(nums[i], nums[n - 1], nums[n - 2], nums[n - 3]) < target) continue;
+            j = i+1;
+            while(j<n-2) {
+                k = j+1;
+                m = n-1;
+                while(k < m) {
+                    long sum = sum4(nums[i], nums[j], nums[k], nums[m]);
+                    if(sum == target) {
+                        List<Integer> arr = new ArrayList<>();
+                        arr.add(nums[i]); arr.add(nums[j]); arr.add(nums[k]); arr.add(nums[m]);
+                        hset.add(arr);
+                        k++; m--;
+                    } else if(sum > target) {
+                        m--;
+                    } else {
+                        k++;
                     }
-                    while(left<right && nums[right]==nums[right-1]){
-                        right--;
-                    }
-                right--;
-                left++;
-
                 }
-                else if(sum>target){
-                  right--;
-                }else{
-                  left++;
-                }
-               
-             }
-
+                j++;
             }
         }
-       return result; 
+        ans.addAll(hset);
+        return ans;
+    }
+
+    private long sum4(int a, int b, int c, int d) {
+        return (long) a + b + c + d;
     }
 }
