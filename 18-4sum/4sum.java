@@ -1,43 +1,46 @@
-import java.util.*;
-
 class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
-        List<List<Integer>> result = new ArrayList<>();
-        Set<List<Integer>> resultSet = new HashSet<>(); 
-        
-        Arrays.sort(nums); 
-        
-        for (int i = 0; i < nums.length - 3; i++) {
-            for (int j = i + 1; j < nums.length - 2; j++) {
-                int left = j + 1;
-                int right = nums.length - 1;
+        List<List<Integer>> result =new ArrayList();
+        Arrays.sort(nums);
+        for(int i=0;i<nums.length-3;i++){
+            if(i>0 && nums[i]==nums[i-1]){
+                continue;
+            }
+
+            for(int j=i+1;j<nums.length-2;j++){
+             if(j>i+1&& nums[j]==nums[j-1]){
+                continue;
+             }
+
+             int left = j+1;
+             int right= nums.length-1;
+
+             while(left<right){
+                long sum =(long) nums[i]+ (long)nums[j]+(long) nums[left]+(long)nums[right];
                 
-                while (left < right) {
-                    long sum = (long)nums[i] + nums[j] + nums[left] + nums[right];
-                    if (sum == target) {
-                        List<Integer> arr = new ArrayList<>();
-                        arr.add(nums[i]);
-                        arr.add(nums[j]);
-                        arr.add(nums[left]);
-                        arr.add(nums[right]);
-                        
-                        if (!resultSet.contains(arr)) {
-                            resultSet.add(arr); 
-                        }
-                        
+                if(sum==target){
+                  
+                    result.add(Arrays.asList( nums[i],nums[j], nums[left],nums[right]));
+                    while(left<right && nums[left]==nums[left+1]){
                         left++;
-                        right--;
-                    } else if (sum <= target) {
-                        left++;
-                    } else if(sum > target){
+                    }
+                    while(left<right && nums[right]==nums[right-1]){
                         right--;
                     }
+                right--;
+                left++;
+
                 }
+                else if(sum>target){
+                  right--;
+                }else{
+                  left++;
+                }
+               
+             }
+
             }
         }
-        
-        result.addAll(resultSet); 
-        
-        return result;
+       return result; 
     }
 }
