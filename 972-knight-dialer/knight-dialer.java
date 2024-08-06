@@ -1,37 +1,36 @@
 class Solution {
+    static final int mod = (int) 1e9 + 7;
+    static final int[][] MOVES = {
+            /*0*/ {4, 6},
+            /*1*/ {6, 8},
+            /*2*/ {7, 9},
+            /*3*/ {4, 8},
+            /*4*/ {0, 3, 9},
+            /*5*/ {},
+            /*6*/ {0, 1, 7},
+            /*7*/ {2, 6},
+            /*8*/ {1, 3},
+            /*9*/ {2, 4}
+    };
+    static final int[][] cache = new int[5001][10];
+     
     public int knightDialer(int n) {
-        int dialerComb[][][] = new int[n][4][3], mod = 1000000007;
-        for(int r = 0; r < 4; r++){
-            Arrays.fill(dialerComb[0][r], 1);
-        }
-        for(int movNo = 0; movNo < n; movNo++){
-            dialerComb[movNo][3][0] = dialerComb[movNo][3][2] = -1;
-        }
-        int dirs[][] = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
-        for(int movNo = 1; movNo < n; movNo++){
-            for(int r = 0; r < 4; r++){
-                for(int c = 0; c < 3; c++){
-                    if (dialerComb[movNo][r][c] == -1)continue;
-                    for(var dir : dirs){
-                        int prevRow = r + dir[0], prevCol = c + dir[1];
-                        if(isSafe(dialerComb, prevRow, prevCol, movNo-1)){
-                             dialerComb[movNo][r][c] = (dialerComb[movNo][r][c] % mod +  dialerComb[movNo-1][prevRow][prevCol] % mod)%mod;
-                        }
-                    }
-                }
-            }
-        }
-
-        int unqPhnNum = 0;
-        for(int r = 0; r < 4; r++){
-            for(int c = 0; c < 3; c++){
-                 if(dialerComb[n-1][r][c] == -1)continue;
-                 unqPhnNum =  (unqPhnNum % mod + dialerComb[n-1][r][c] % mod)%mod;
-            }
-        }
-        return unqPhnNum;
+        return knightDialer(n, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
     }
-    private boolean isSafe(int [][][]dialerComb, int prevRow, int prevCol, int movNo){
-        return movNo  > -1 && prevRow < 4 && prevCol < 3  && prevRow > -1 && prevCol > -1 && dialerComb[movNo][prevRow][prevCol] != -1;
-    }    
-}
+
+    int knightDialer(int remaining, int[] nextNumbers) {
+        if (remaining == 1) return nextNumbers.length;
+        int count = 0;
+
+        for (int nextNumber : nextNumbers) {
+            int cur = cache[remaining][nextNumber];
+            if (cur == 0) {
+                cur = knightDialer(remaining - 1, MOVES[nextNumber]);
+                cache[remaining][nextNumber] = cur;
+            }
+            count += cur;
+            count %= mod;
+        }
+        return count;
+    }
+} 
