@@ -1,29 +1,24 @@
 class Solution {
-    public static int count;
-
+    int count = 0;
     public int countArrangement(int n) {
-        count = 0;
-        int[] perm = new int[n+1];
-        backtrack(perm, 1);
-
+        boolean[] visited = new boolean[n];
+        backtrack(1, n, visited);
         return count;
     }
 
-    public void backtrack(int[] perm, int pos) {
-        if(pos == perm.length)
-        {
+    public void backtrack(int pos, int n, boolean[] visited) {
+        if (pos == n) {
             count++;
-
             return;
         }
 
-        for(int i = 1; i < perm.length; i++)
-        {
-            if(perm[i] == 0 && (i%pos == 0 || pos%i == 0))
-            {
-                perm[i] = pos;
-                backtrack(perm, pos+1);
-                perm[i] = 0;
+        for (int i = 1; i <= n; ++i) {
+            if (!visited[i-1]) {
+                if (i % (pos + 1) == 0 || (pos + 1) % i == 0) {
+                    visited[i-1] = true;
+                    backtrack(pos+1, n, visited);
+                    visited[i-1] = false;
+                }
             }
         }
     }
