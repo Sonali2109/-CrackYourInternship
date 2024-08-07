@@ -14,13 +14,12 @@ class Solution {
             return;
         }
 
-        if(target<0)
-            return;
-
         for(int i=start; i<nums.length; i++)
         {
             if(i>start && nums[i] == nums[i-1])
                 continue;
+            if(nums[i] > target)
+                break;
             
             cur.add(nums[i]);
             backtrack(i+1,nums,cur,res,target - nums[i]);
