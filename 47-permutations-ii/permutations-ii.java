@@ -1,29 +1,40 @@
 class Solution {
     public List<List<Integer>> permuteUnique(int[] nums) {
-        List<List<Integer>> res = new ArrayList<>();
-        Arrays.sort(nums);
-        backtrack(nums, res, new ArrayList<>(), new boolean[nums.length]);
-        return res;
+     List<List<Integer>> list = new ArrayList<List<Integer>>();
+     getPermuteUnique(nums , list , 0);
+     return list;   
     }
 
-    static void backtrack(int[] nums,List<List<Integer>> ans,List<Integer> list,boolean[] freq){
-        if(list.size() == nums.length && !ans.contains(list)){
-            ans.add(new ArrayList<>(list));
-            return;
-        }
-        
-        for(int i=0;i<nums.length;i++){
-            
-            if(freq[i])
+    public void getPermuteUnique(int[] nums , List<List<Integer>> list , int index ){
+        if(index == nums.length){
+            List<Integer> temp = new ArrayList<Integer>();
+            for(int i : nums){
+                temp.add(i);
+            }
+            list.add(temp);
+        } 
+
+        for(int j = index;j<nums.length ;j++){
+            boolean isMatched = false;
+
+             for(int r =j-1;r>=index;r--){
+                if(nums[j]==nums[r]){
+                  isMatched = true;  
+                }
+             }
+             if(isMatched){
                 continue;
+             }
 
-            freq[i] = true;
-            list.add(nums[i]);
-
-            backtrack(nums,ans,list,freq);
-
-            freq[i] = false;
-            list.remove(list.size()-1);
+            swap(nums,index,j);
+            getPermuteUnique(nums,list,index+1);
+            swap(nums,index,j);
         }
+    }
+
+    public void swap(int[] nums , int p ,int q){
+        int tValue = nums[p];
+        nums[p] = nums[q];
+        nums[q]=tValue;
     }
 }
