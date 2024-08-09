@@ -1,31 +1,19 @@
 class Solution {
     public int leastInterval(char[] tasks, int n) {
-        Map<Character, Integer> frequencies = new HashMap<>();
-
-        // Store the frequency of each task
-        for (char t : tasks) {
-            frequencies.put(t, frequencies.getOrDefault(t, 0) + 1);
+        int[] frequencies = new int[26];
+        for (int t : tasks) {
+            frequencies [t - 'A']++;
         }
+        Arrays.sort(frequencies);
 
-        // Sort the frequencies
-        List<Map.Entry<Character, Integer>> sortedFrequencies = new ArrayList<>(frequencies.entrySet());
-        Collections.sort(sortedFrequencies, (lhs, rhs) -> lhs.getValue().compareTo(rhs.getValue()));
+        int f_max = frequencies[25];
+        int idle_time = (f_max - 1) * n;
 
-        // Store the max frequency
-        int maxFreq = sortedFrequencies.get(sortedFrequencies.size() - 1).getValue();
-        sortedFrequencies.remove(sortedFrequencies.size() - 1);
-
-        // Compute the maximum possible idle time
-        int idleTime = (maxFreq - 1) * n;
-
-        // Iterate over the frequencies array and update the idle time
-        while (!sortedFrequencies.isEmpty() && idleTime > 0) {
-            idleTime -= Math.min(maxFreq - 1, sortedFrequencies.get(sortedFrequencies.size() - 1).getValue());
-            sortedFrequencies.remove(sortedFrequencies.size() - 1);
+        for (int i = frequencies.length - 2; i >= 0; i--) {
+            idle_time -= Math.min(f_max - 1, frequencies[i]);
         }
-        idleTime = Math.max(0, idleTime);
+        idle_time = Math.max(0, idle_time);
 
-        // Return the total time, which is the sum of the busy time and idle time
-        return tasks.length + idleTime;
+        return idle_time + tasks.length;
     }
 }
