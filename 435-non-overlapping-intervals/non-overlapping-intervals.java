@@ -1,17 +1,30 @@
-class Solution {
-    public int eraseOverlapIntervals(int[][] intervals) {
-        int res=0;
-        Arrays.sort(intervals,(a,b)->a[1]-b[1]);
-     int prev_end = intervals[0][1];
+class Solution{
+    public int eraseOverlapIntervals(int[][] in) {
+        int min = in[0][1];
+        int max = in[0][1];
 
-        for (int i = 1; i < intervals.length; i++) {
-            if (prev_end > intervals[i][0]) {
-                res++;
-            } else {
-                prev_end = intervals[i][1];
-            }
+        for(int i[]:in){
+            min = Math.min(min,i[1]);
+            max = Math.max(max,i[1]);
         }
 
-        return res;        
+        int a[] = new int[max-min+1];
+        Arrays.fill(a,-1);
+        for(int i[]:in){
+            if(a[i[1]-min]==-1 || a[i[1]-min]<i[0]-min)
+                a[i[1]-min] = i[0]-min;
+        }
+
+        int k = 1;
+        int e = 0;
+
+        for(int i=1;i<a.length;i++){
+            if(a[i]==-1) continue;
+            if(a[i]>=e){
+                k++;
+                e = i;
+            }
+        }
+        return in.length-k;
     }
 }
