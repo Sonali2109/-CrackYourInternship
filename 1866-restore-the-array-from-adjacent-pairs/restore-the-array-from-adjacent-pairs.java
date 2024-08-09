@@ -1,43 +1,34 @@
 class Solution {
-    public int[] restoreArray(int[][] adjacentPairs) {
-
-        Map<Integer, List<Integer>> graph = new HashMap<>();
-        for(var prs : adjacentPairs){
-            int u = prs[0], v = prs[1];
-            graph.putIfAbsent(u, new ArrayList<>());
-            graph.putIfAbsent(v, new ArrayList<>());
-            graph.get(u).add(v);
-            graph.get(v).add(u);
-        }
-        HashSet<Integer> visitedVert = new HashSet<>();
-        Deque<Integer> que = new ArrayDeque<>();
-        que.offerLast(adjacentPairs[0][0]);
-        int lastVertVist = -1;
-        while(!que.isEmpty()){
-            var currVert = que.pollFirst();
-            lastVertVist = currVert;
-            visitedVert.add(currVert);
-            for(var neigh : graph.get(currVert)){
-              if(!visitedVert.contains(neigh))  
-                que.offerLast(neigh);
+    public int[] restoreArray(int[][] vals) {
+        Map<Integer, int[]> pairs = new HashMap<>();
+        for (int i = 0; i < vals.length; i++) {
+            if (pairs.containsKey(vals[i][0])) {
+                pairs.get(vals[i][0])[1] = vals[i][1];
+            } else {
+                pairs.put(vals[i][0], new int[] {vals[i][1], -1000000});
+            }
+            if (pairs.containsKey(vals[i][1])) {
+                pairs.get(vals[i][1])[1] = vals[i][0];
+            } else {
+                pairs.put(vals[i][1], new int[] {vals[i][0], -1000000});
             }
         }
-        visitedVert.clear();
-        List<Integer> orgArr = new ArrayList<>();
-        buildArray(lastVertVist, graph, orgArr, visitedVert);
-        return orgArr.stream().mapToInt(x->x).toArray();
-    }
-    
-    private void buildArray(int src, Map<Integer, List<Integer>> graph, List<Integer> orgArr, HashSet<Integer> visitedVert){
-        if(visitedVert.contains(src)){
-            return;
+        int[] result = new int[vals.length + 1];
+        int start = -1000000;
+        for (Map.Entry<Integer, int[]> entry : pairs.entrySet()) {
+            if (entry.getValue()[1] == -1000000) {
+                start = entry.getKey();
+            }
         }
-        visitedVert.add(src);
-        orgArr.add(src);
-        for(var neigh : graph.get(src)){
-            if(!visitedVert.contains(neigh))
-              buildArray(neigh, graph, orgArr, visitedVert);
+        result[0] = start;
+        int left = -1000000;
+        for (int i = 1; i < result.length; i++) {
+            int[] val = pairs.get(start);
+            int newval = (val[0] == left ? val[1] : val[0]);
+            result[i] = newval;
+            left = start;
+            start = newval;
         }
-
+        return result;
     }
 }
