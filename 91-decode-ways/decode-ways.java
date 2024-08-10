@@ -1,28 +1,17 @@
 class Solution {
-    public int numDecodings(String s) 
-    {
-        int n = s.length();
-        int[] res = new int[n+1];
+    public int numDecodings(String s) {
+        if (s.startsWith("0")) return 0;
+        int[] dp = new int[s.length() + 1];
+        dp[0] = 1;
+        dp[1] = 1;
 
-        res[0] = 1;
-        res[1] = s.charAt(0) == '0' ? 0 :1;
-
-        for(int i=2; i<=n; i++)
-        {
-            int oneDigit = Integer.valueOf(s.substring(i-1,i));
-            int twoDigit = Integer.valueOf(s.substring(i-2,i));
-
-            if(oneDigit>=1)
-            {
-                res[i] = res[i] + res[i-1];
-
-            }
-
-            if(twoDigit>=10 && twoDigit<=26)
-            {
-                 res[i] = res[i] + res[i-2];
-            }
+        for (int i = 1; i < s.length(); i++) {
+            int first = s.charAt(i - 1) - '0';
+            int second = s.charAt(i) - '0';
+            int two = first * 10 + second;
+            if (two >= 10 && two <= 26) dp[i + 1] += dp[i - 1];
+            if (second != 0) dp[i + 1] += dp[i];
         }
-        return res[n];   
+        return dp[s.length()];
     }
 }
