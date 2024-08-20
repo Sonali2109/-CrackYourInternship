@@ -1,62 +1,63 @@
 class Solution {
 
-    // TC:O(n*k2)
+    int wordMaxLength = 301;
     public List<List<Integer>> palindromePairs(String[] words) {
-        List<List<Integer>> res = new ArrayList();
-        Map<String, Integer> map = new HashMap();
-
-        for (int i = 0; i < words.length; ++i) {
-            map.put(words[i], i);
+        List<List<Integer>> ans = new ArrayList<>();
+        int n = words.length;
+        Map<String, Integer> map = new HashMap<>(n << 2);
+        boolean[] seen = new boolean[wordMaxLength];
+        for (int i = 0; i < n; i++) {
+            String word = words[i];
+            map.put(word, i);
+            seen[word.length()] = true;
         }
 
-        // Empty String case
-        if (map.containsKey("")) {
-            int blankIdx = map.get("");
-            for (int i = 0; i < words.length; ++i) {
-                if (i != blankIdx && isPalindrome(words[i])) {
-                    res.add(Arrays.asList(blankIdx, i));
-                    res.add(Arrays.asList(i, blankIdx));
-                }
-            }
-        }
+        for (int i = 0; i < n; i++) {
+            String word = words[i];
+            int m = word.length();
+            if (m == 0) continue;
+            char[] cs = word.toCharArray();
+            String re = new StringBuilder(word).reverse().toString();
 
-        // Reflection case
-        for (int i = 0; i < words.length; ++i) {
-            String reversed = new StringBuilder(words[i]).reverse().toString();
-            Integer reversedIdx = map.get(reversed);
-            if (reversedIdx != null && reversedIdx != i) {
-                res.add(Arrays.asList(i, reversedIdx));
-            }
-        }
-
-
-        // Tricky case
-        for (int i = 0; i < words.length; ++i) {
-            String cur = words[i];
-            for (int cut = 1; cut < cur.length(); ++cut) {
-                String left = cur.substring(0, cut);
-                String right = cur.substring(cut);
-                if (isPalindrome(left)) {
-                    String reversedRight = new StringBuilder(right).reverse().toString();
-                    if (map.containsKey(reversedRight)) {
-                        res.add(Arrays.asList(map.get(reversedRight), i));
+            for (int j = 0; j < m - 1; j++) {
+                if (seen[j + 1] && isPalindrome(cs, j + 1, m - 1)) {
+                    String s = re.substring(m - j - 1, m);
+                    Integer k = map.get(s);
+                    if (k != null){
+                        ans.add(List.of(i, k));
                     }
                 }
-                if (isPalindrome(right)) {
-                    String reversedLeft = new StringBuilder(left).reverse().toString();
-                    if (map.containsKey(reversedLeft)) {
-                        res.add(Arrays.asList(i, map.get(reversedLeft)));
+                if (seen[m - j - 1] && isPalindrome(cs, 0, j)) {
+                    String s = re.substring(0, m - j - 1);
+                    Integer k = map.get(s);
+                    if (k != null){
+                        ans.add(List.of(k, i));
                     }
                 }
             }
+
+            if (isPalindrome(cs, 0, m - 1)) {
+                Integer k = map.get("");
+                if (k != null) {
+                    ans.add(List.of(k, i));
+                    ans.add(List.of(i, k));
+                }
+            } else {
+                Integer k = map.get(re);
+                if (k != null) {
+                    ans.add(List.of(i, k));
+                }
+            }
         }
-        return res;
+        return ans;
     }
-
-    private boolean isPalindrome(String word) {
-        int i = 0, j = word.length() - 1;
-        while(i < j) {
-            if (word.charAt(i++) != word.charAt(j--)) return false;
+    
+    private boolean isPalindrome(char[] cs, int left, int right) {
+        while (left < right) {
+            if (cs[left] != cs[right])
+                return false;
+            left++;
+            right--;
         }
         return true;
     }
