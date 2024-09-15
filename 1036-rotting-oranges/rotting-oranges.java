@@ -1,54 +1,48 @@
-import java.util.*;
-class orange{
-    int row,col,mins;
-    public orange(int r,int c,int m){
-        this.row = r;
-        this.col = c;
-        this.mins= m;
+class Solution 
+{
+    public int orangesRotting(int[][] grid) 
+    {
+        int min = 0;
+        int n = grid.length; //row
+        int m = grid[0].length;  //col
+
+        for(int i=0;i<n;i++)
+        {
+            for(int j = 0;j<m;j++)
+            {
+                if(grid[i][j] == 2)
+                    dfs(i,j,grid,-1);
+            }
+        }
+        for(int i =0;i<n;i++){
+            for(int j = 0;j<m;j++){
+                if(grid[i][j] !=1){
+                    min = Math.min(min,grid[i][j]);
+                }else{
+                    return -1;
+                }
+            }
+        }
+        return min == 0?0:-min-1;
     }
-}
-class Solution {
-    public int orangesRotting(int[][] grid) {
-         int r = grid.length;
-        int c = grid[0].length;
-        int fresh = 0;
-        Queue<orange> queue = new ArrayDeque<>();
-        for(int i= 0;i <r;i++){
-            for(int j=0;j<c;j++){
-               if(grid[i][j] == 1){
-                   fresh++;
-                   
-               } 
-               else if(grid[i][j] == 2){
-                   queue.add(new orange(i,j,0));
-                   grid[i][j] = 0;
-               }
-            }
+
+    public static void dfs(int i , int j , int[][]grid,int min)
+    {
+        grid[i][j] = min;
+        min--;
+        if(i>0 && (grid[i-1][j] == 1 || grid[i-1][j] <min)){
+            dfs(i-1,j,grid,min);
         }
-        if(queue.isEmpty() && fresh == 0){
-            return 0;
+        if(j>0 && (grid[i][j-1] == 1 || grid[i][j-1] <min)){
+            dfs(i,j-1,grid,min);
         }
-        int maxMins = 0;
-        int rowdiff[] = {-1,0,0,1};
-        int coldiff[] = {0,-1,1,0};
+        if(i<grid.length-1 && (grid[i+1][j] == 1 || grid[i+1][j] <min)){
+            dfs(i+1,j,grid,min);
+        }
+        if(j<grid[0].length-1 && (grid[i][j+1] == 1 || grid[i][j+1] <min)){
+            dfs(i,j+1,grid,min);
+        }
         
-        while(!queue.isEmpty()){
-            orange curr = queue.poll();
-            maxMins = Math.max(maxMins,curr.mins);
-            for(int i=0;i<4;i++){
-                int adjr = curr.row+rowdiff[i];
-                int adjc = curr.col+coldiff[i];
-                if(adjr >= 0 && adjr<r && adjc>=0 && adjc<c && grid[adjr][adjc] == 1){
-                queue.add(new orange(adjr,adjc,curr.mins+1));
-                    
-                    fresh--;
-                grid[adjr][adjc] = 0;
-                } 
-            }
-        }
-        if(fresh>0){
-            return -1;
-        }
-        return maxMins;
-        }
+
+    }
 }
