@@ -11,12 +11,14 @@ class Solution {
             solve(grid,n,m,i,j+1);
         }
     }
+
     public int numIslands(char[][] grid) {
         int n,m;
-        n=grid.length;
-        m=grid[0].length;
-        int count=0;
+        n=grid.length;  
+        m=grid[0].length;   
+        int count=0;                    
         int i,j;
+
         for(i=0;i<n;i++){
             for(j=0;j<m;j++){
                 if(grid[i][j]=='1'){
