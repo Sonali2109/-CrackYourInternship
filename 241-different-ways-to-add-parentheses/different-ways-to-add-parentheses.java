@@ -1,35 +1,44 @@
 class Solution {
-    public List<Integer> diffWaysToCompute(String expr) {
-        List<Integer> res = new ArrayList<>();
-
-        for(int i=0; i<expr.length(); i++)
-        {
-            char ch = expr.charAt(i);
-
-            if(ch == '-' || ch == '+' || ch == '*'){
-                String left = expr.substring(0,i);
-                String right = expr.substring(i+1);   
-
-                List<Integer> leftRes = diffWaysToCompute(left);
-                List<Integer> rightRes = diffWaysToCompute(right);
-
-                for(int x: leftRes)
-                {
-                    for(int y: rightRes)
-                    {
-                        if(ch == '+')
-                            res.add(x+y);
-                        else if(ch == '-')
-                            res.add(x-y);
-                        else
-                            res.add(x*y);
+    public List<Integer> diffWaysToCompute(String expression) {
+        List<Integer> results = new ArrayList<>();
+        if (expression.length() == 0) return results;
+        if (expression.length() == 1) {
+            results.add(Integer.parseInt(expression));
+            return results;
+        }
+        if (
+            expression.length() == 2 && Character.isDigit(expression.charAt(0))
+        ) {
+            results.add(Integer.parseInt(expression));
+            return results;
+        }
+        for (int i = 0; i < expression.length(); i++) {
+            char currentChar = expression.charAt(i);
+            if (Character.isDigit(currentChar)) continue;
+            List<Integer> leftResults = diffWaysToCompute(
+                expression.substring(0, i)
+            );
+            List<Integer> rightResults = diffWaysToCompute(
+                expression.substring(i + 1)
+            );
+            for (int leftValue : leftResults) {
+                for (int rightValue : rightResults) {
+                    int computedResult = 0;
+                    switch (currentChar) {
+                        case '+':
+                            computedResult = leftValue + rightValue;
+                            break;
+                        case '-':
+                            computedResult = leftValue - rightValue;
+                            break;
+                        case '*':
+                            computedResult = leftValue * rightValue;
+                            break;
                     }
+                    results.add(computedResult);
                 }
             }
         }
-
-        if(res.size() == 0)
-            res.add(Integer.parseInt(expr));
-        return res;
+        return results;
     }
 }
