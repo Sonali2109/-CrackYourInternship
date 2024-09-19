@@ -1,47 +1,44 @@
 class Solution {
     public String reorganizeString(String s) {
-        PriorityQueue<Pair<Integer,Character>> mxheap ;
-        mxheap = new PriorityQueue<>((a,b) -> a.getKey()!=b.getKey() ?  -a.getKey() + b.getKey() : a.getValue()- b.getValue());
-        int i = 0 , n = s.length();
         int[] count = new int[26];
-        for(i = 0 ; i  < n ;i++){
-            char c = s.charAt(i);
-            count[c-'a']++;
+        int n = s.length();
+        for(int i = 0 ; i < n ; i++)
+        {
+            count[s.charAt(i) - 'a']++;
         }
-        for(i = 0 ; i < 26; i++)
-            if(count[i] != 0)
-                mxheap.add(new Pair(count[i], (char)('a'+i)));
-        // System.out.println(mxheap);
-        String ans = "";
-        while( mxheap.size() > 0 ){
-            int num = mxheap.peek().getKey();
-            char c = mxheap.peek().getValue();
-            mxheap.poll();
-            
-            ans+=c;
-            boolean present = false;
-            int num2 = 0;
-            char c2 = ' ';
-            if(mxheap.size() > 0 ){
-                num2 = mxheap.peek().getKey();
-                c2 = mxheap.peek().getValue();
-                mxheap.poll();
-                present = true;
-                ans+=c2;
+        int maxCount = 0;
+        int indexOfMax = 0;
+        for(int i = 0 ; i < count.length ; i++)
+        {
+            if(maxCount < count[i])
+            {
+                maxCount = count[i];
+                indexOfMax = i;
             }
-//             System.out.println(num+"  "+c);
-//             System.out.println(num2+"  "+c2);
+        }
+        if(maxCount > (n+1)/2)
+        return "";
+        char[] ans = new char[n];
+        int index = 0;
+        while(count[indexOfMax] != 0)
+        {
+            ans[index] = (char) (indexOfMax + 'a');
+            index = index + 2;
+            count[indexOfMax]--;
+        }
+        for(int i = 0 ; i < count.length ; i++)
+        {
+            while(count[i] != 0)
+            {
+                if(index >= ans.length)
+                index = 1;
             
-//             System.out.println(ans);
-            if(present && num2-1 > 0)
-                mxheap.add(new Pair(num2-1, c2));
-            if(num -1 > 0)
-                mxheap.add(new Pair(num-1,c));
+            ans[index] = (char)(i + 'a');
+            index = index + 2;
+            count[i]--;
+            }
         }
-        for(i = 1 ; i < ans.length(); i++){
-            if(ans.charAt(i) == ans.charAt(i-1) )
-                return "";
-        }
-        return ans;
+        return String.valueOf(ans);
+
     }
 }
