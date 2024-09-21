@@ -1,21 +1,36 @@
 class Solution {
-  public String shortestPalindrome(String s) {
-    // Reverse the input string 's'
-    final String t = new StringBuilder(s).reverse().toString();
+    public String shortestPalindrome(String s) 
+    {
+        int m=s.length();
+        StringBuilder sb = new StringBuilder();
 
-    // Iterate through the reversed string 't'
-    for (int i = 0; i < t.length(); i++) {
-      // Check if the original string 's' starts with the current suffix of 't'
-      // The substring from index 'i' onwards is compared with the start of 's'
-      if (s.startsWith(t.substring(i))) {
-        // If a matching prefix-suffix is found, return the result by adding
-        // the unmatched part of 't' to the front of 's' to form the palindrome
-        return t.substring(0, i) + s;
-      }
+        for(int i=s.length()-1;i>=0;i--){
+            sb.append(s.charAt(i));
+        }
+        String rev=sb.toString();
+
+        String combined_str=s+'#'+rev;
+        int n=combined_str.length();
+
+        int[] lps = new int[n];
+        int i=0,j=1;
+        lps[0]=0;
+
+        while(j<combined_str.length()){
+            if(combined_str.charAt(i)==combined_str.charAt(j))
+            {
+                lps[j]=i+1;
+                i++;
+                j++;
+            }
+            else if(i!=0){
+                i=lps[i-1];
+            }
+            else{
+                lps[j]=0;
+                j++;
+            }
+        }
+        return rev.substring(0,m-lps[n-1])+s;
     }
-
-    // If no matching prefix-suffix is found, the entire reversed string 't'
-    // is added in front of 's' to form the shortest palindrome
-    return t + s;
-  }
 }
